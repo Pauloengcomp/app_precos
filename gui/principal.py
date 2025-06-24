@@ -10,7 +10,7 @@ class MainWindow(QWidget):
         # Modelos de planilha
         self.perfis_planilhas = {
             "Modelo Original": {"skiprows": 0, "colunas": None},
-            "Planserv Mat": {"skiprows": 8, "colunas": [0, 2, 4]},
+            "Planserv Mat": {"skiprows": 0, "colunas": [0, 2, 4]},
             "Planserv Med": {"skiprows": 1, "colunas": [2, 3, 4, 6, 6]}
         }
 
@@ -106,6 +106,29 @@ class MainWindow(QWidget):
                     df_selecionado["CAMPO ZERADO 2"] = "0"
 
                     df = df_selecionado
+
+                # Reordena e processa colunas para Planserv Mat
+            if modelo == "Planserv Mat":
+                df = df.reset_index(drop=True)
+
+                # Define os índices conforme pedido
+                indices = [7, 8, 12, 12, 1, 2, 3, 0, 9]
+                df_selecionado = df.iloc[:, indices].copy()
+
+                # Renomeia a coluna duplicada para evitar conflito
+                df_selecionado.columns = [
+                    f"{col}_{idx}" if idx != df_selecionado.columns.tolist().index(col) else col
+                    for idx, col in enumerate(df_selecionado.columns)
+                ]
+
+                # Substitui ponto por vírgula apenas nas duas colunas duplicadas de índice 12
+                col_valor1 = df_selecionado.columns[2]
+                col_valor2 = df_selecionado.columns[3]
+                df_selecionado[col_valor1] = df_selecionado[col_valor1].astype(str).str.replace('.', ',', regex=False)
+                df_selecionado[col_valor2] = df_selecionado[col_valor2].astype(str).str.replace('.', ',', regex=False)
+
+                df = df_selecionado
+
                 self.df_processado = df
 
             preview_df = df.head()
