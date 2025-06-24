@@ -1,10 +1,20 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLineEdit, QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem, QComboBox, QLabel, QFileDialog
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt
+import os, sys
 from conversor.excel_para_txt import converter_df_para_txt
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Conversor Excel → TXT")
+        # Determina o caminho correto para o ícone, mesmo no executável gerado com PyInstaller
+        if getattr(sys, 'frozen', False):
+            caminho_icone = os.path.join(sys._MEIPASS, 'icone.ico')
+        else:
+            caminho_icone = 'icone.ico'
+
+        self.setWindowIcon(QIcon(caminho_icone))
         self.setFixedSize(500, 300)
 
         # Modelos de planilha
@@ -43,6 +53,11 @@ class MainWindow(QWidget):
 
         layout.addWidget(self.preview_tabela)
         layout.addWidget(self.botao_converter)
+
+        rodape = QLabel("Desenvolvido por Paulo Lima - Alphacare")
+        rodape.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        rodape.setStyleSheet("color: gray; font-size: 10px;")
+        layout.addWidget(rodape)
         self.setLayout(layout)
 
     def selecionar_arquivo(self):
