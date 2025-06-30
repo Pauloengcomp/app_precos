@@ -101,7 +101,7 @@ class MainWindow(QWidget):
                     df = df.reset_index(drop=True)
 
                     # Seleciona as colunas relevantes por nome
-                    df_selecionado = df.iloc[:, [2, 3, 4, 5, 6]].copy()
+                    df_selecionado = df.iloc[:, [2, 3, 4, 6]].copy()
                     # Substitui ponto por vírgula nas colunas numéricas (original)
                     for col in df_selecionado.columns[3:5]:  # índices 3 e 4
                         df_selecionado[col] = df_selecionado[col].astype(str).str.replace(".", ",", regex=False)
@@ -144,7 +144,7 @@ class MainWindow(QWidget):
 
                 df = df_selecionado
 
-                self.df_processado = df
+            self.df_processado = df
 
             preview_df = df.head()
 
